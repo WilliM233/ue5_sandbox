@@ -1,14 +1,85 @@
-Binaries
-DerivedDataCache
-Intermediate
-Saved
-.vscode
-.vs
-*.VC.db
-*.opensdf
-*.opendb
-*.sdf
+############################
+# Unreal Engine 5
+############################
+
+# Build artifacts and cache
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+*.log
+*.dmp
+
+# Optional: Ignore local configs, but keep shared defaults
+Config/*.ini
+!Config/Default*.ini
+
+# Autosaves and backups
+Autosaves/
+Backup/
+
+# Compiled assets
+*.uasset
+*.umap
+*.ubulk
+*.uexp
+*.ucas
+*.utoc
+
+############################
+# Visual Studio
+############################
+
+# VS project files
 *.sln
 *.suo
-*.xcodeproj
-*.xcworkspace
+*.user
+*.userosscache
+*.VC.db
+*.VC.opendb
+*.opensdf
+*.sdf
+*.cachefile
+
+# IntelliSense and metadata
+*.ipch
+*.tlog
+*.pch
+*.pdb
+*.obj
+*.idb
+
+# Miscellaneous
+*.ncb
+*.aps
+*.res
+*.sbr
+
+# IDE folders
+.vs/
+.vscode/
+.idea/
+
+############################
+# OS-specific
+############################
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+############################
+# Git-specific (SAFE)
+############################
+
+# Git system folder (automatically ignored by Git)
+.git/
+
+# Do NOT ignore these:
+# .gitattributes - required for LFS tracking
+# .gitignore - this file itself, keep tracked!
