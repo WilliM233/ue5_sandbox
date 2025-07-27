@@ -42,21 +42,25 @@ public:
 	// Sets default values for this character's properties
 	ASandboxPlayerCharacter();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
+	
 	// Called for movement input
 	void Move(const FInputActionValue& Value);
 
 	// Called for looking input
 	void Look(const FInputActionValue& Value);
 
-public:
+private:
+	// Rotation mode logic
+	void UpdateRotationMode();
 
 	// Handle Inputs
-	UFUNCTION(BlueprintCallable, Category="Input")
+	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoMove(float Right, float Forward);
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
@@ -67,6 +71,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Input")
 	virtual void DoJumpEnd();
+
+	bool bIsMoving = false;
 	
 public:
 	// Get components for use in BP

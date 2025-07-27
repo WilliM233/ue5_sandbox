@@ -15,6 +15,9 @@
 // Sets default values
 ASandboxPlayerCharacter::ASandboxPlayerCharacter()
 {
+	// Enable tick
+	PrimaryActorTick.bCanEverTick = true;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(30.f, 86.0f);
 
@@ -23,11 +26,9 @@ ASandboxPlayerCharacter::ASandboxPlayerCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	/* ACTIVATE TO REMOVE STRAFING
 	// Use if Camera shouldn't rotate player, allows movement input to rotate player
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	*/
 
 	// Default Movement Values
 	GetCharacterMovement()->JumpZVelocity = 500.f;
@@ -47,6 +48,24 @@ ASandboxPlayerCharacter::ASandboxPlayerCharacter()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+}
+
+void ASandboxPlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	// Only track horizontal speed
+	FVector Velocity = GetVelocity();
+	Velocity.Z = 0;
+
+	const bool bWasMoving = bIsMoving;
+	bIsMoving = Velocity.SizeSquared() > KINDA_SMALL_NUMBER;
+
+	// Only updates if the state changes
+	if (bWasMoving != bIsMoving)
+	{
+		UpdateRotationMode();
+	}
 }
 
 // Called to bind functionality to input
@@ -103,12 +122,8 @@ void ASandboxPlayerCharacter::DoMove(float Right, float Forward)
 
 void ASandboxPlayerCharacter::DoLook(float Yaw, float Pitch)
 {
-	if (GetController() != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(Yaw);
-		AddControllerPitchInput(Pitch);
-	}
+	AddControllerYawInput(Yaw);
+	AddControllerPitchInput(Pitch);
 }
 
 void ASandboxPlayerCharacter::DoJumpStart()
@@ -119,5 +134,21 @@ void ASandboxPlayerCharacter::DoJumpStart()
 void ASandboxPlayerCharacter::DoJumpEnd()
 {
 	StopJumping();
+}
+
+void ASandboxPlayerCharacter::UpdateRotationMode()
+{
+	if (bIsMoving)
+	{
+		// Moving: Character rotates with the mouse
+		bUseControllerRotationYaw = true;
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
+	else
+	{
+		// Idle: Allow free-look
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
 }
 
